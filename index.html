@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>White Library v2 – Documentation</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #1e1e1e;
+        color: #fff;
+        margin: 0;
+        padding: 0;
+    }
+    header {
+        background-color: #2d2d2d;
+        padding: 20px;
+        text-align: center;
+    }
+    main {
+        padding: 20px;
+        max-width: 900px;
+        margin: auto;
+    }
+    h1, h2, h3 {
+        color: #ffd700;
+    }
+    pre {
+        background-color: #2d2d2d;
+        padding: 10px;
+        border-radius: 5px;
+        position: relative;
+        overflow-x: auto;
+    }
+    button.copy-btn {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background-color: #444;
+        color: #fff;
+        border: none;
+        padding: 2px 6px;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+    section {
+        margin-bottom: 30px;
+        border-bottom: 1px solid #444;
+        padding-bottom: 20px;
+    }
+</style>
+</head>
+<body>
+
+<header>
+    <h1>White Library v2 – Documentation</h1>
+</header>
+
+<main>
+
+<section>
+    <h2>1. Load the Library</h2>
+    <p>Load the library and create the main window:</p>
+    <pre>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+local WhiteLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/zidiu5/White/refs/heads/main/WhiteGui.lua"))()
+local Window = WhiteLib:CreateWindow("My GUI Title")
+    </pre>
+    <p><strong>Note:</strong> The small toggle GUI ("White" button) is automatically created.</p>
+</section>
+
+<section>
+    <h2>2. Create Tabs</h2>
+    <pre>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+local Tab = Window:CreateTab("Main")
+    </pre>
+    <p><strong>Note:</strong> Creates a tab named <code>tabName</code>.</p>
+</section>
+
+<section>
+    <h2>3. Create Sections</h2>
+    <pre>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+local Section = Tab:CreateSection("Section 1")
+    </pre>
+    <p>Sections contain all buttons, labels, dropdowns, etc.</p>
+</section>
+
+<section>
+    <h2>4. Section Elements</h2>
+
+    <h3>4.1 Label</h3>
+    <pre>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+Section:CreateLabel("This is a label")
+    </pre>
+
+    <h3>4.2 Button</h3>
+    <pre>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+Section:CreateButton("Click Me", function()
+    print("Button clicked!")
+end)
+    </pre>
+
+    <h3>4.3 Toggle</h3>
+    <pre>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+Section:CreateToggle("Switch", false, function(state)
+    print("Toggle state:", state)
+end)
+    </pre>
+
+    <h3>4.4 Textbox</h3>
+    <pre>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+Section:CreateTextbox("Name", "Enter your name", function(text)
+    print("Textbox text:", text)
+end)
+    </pre>
+
+    <h3>4.5 Dropdown</h3>
+    <pre>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+Section:CreateDropdown("Options", {"A", "B", "C"}, function(option)
+    print("Selected:", option)
+end)
+    </pre>
+
+    <h3>4.6 Keybind</h3>
+    <pre>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+Section:CreateKeybind("Teleport", Enum.KeyCode.T, function()
+    print("Key pressed!")
+end)
+    </pre>
+
+</section>
+
+<section>
+    <h2>5. Full Example</h2>
+    <pre>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+local WhiteLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/zidiu5/White/refs/heads/main/WhiteGui.lua"))()
+local Window = WhiteLib:CreateWindow("Example GUI")
+
+local Tab = Window:CreateTab("Main")
+local Section = Tab:CreateSection("Test Section")
+
+Section:CreateLabel("Welcome")
+Section:CreateButton("Click Me", function() print("Button clicked!") end)
+Section:CreateToggle("Switch", true, function(state) print("Toggle:", state) end)
+Section:CreateTextbox("Name", "Enter your name", function(text) print("Text:", text) end)
+Section:CreateDropdown("Options", {"A", "B", "C"}, function(opt) print("Dropdown:", opt) end)
+Section:CreateKeybind("Teleport", Enum.KeyCode.T, function() print("Key pressed!") end)
+    </pre>
+</section>
+
+</main>
+
+<script>
+function copyCode(button) {
+    const code = button.parentElement.innerText.replace("Copy\n", "");
+    navigator.clipboard.writeText(code).then(() => {
+        button.innerText = "Copied!";
+        setTimeout(() => button.innerText = "Copy", 1000);
+    });
+}
+</script>
+
+</body>
+</html>
