@@ -94,7 +94,6 @@ function WhiteLib:CreateWindow(titleText)
         UIList.SortOrder = Enum.SortOrder.LayoutOrder
         UIList.Padding = UDim.new(0,5)
 
-        -- **Fix für gleichmäßige Abstände**
         local UIPadding = Instance.new("UIPadding")
         UIPadding.PaddingLeft = UDim.new(0,10)
         UIPadding.PaddingRight = UDim.new(0,10)
@@ -215,45 +214,73 @@ function WhiteLib:CreateWindow(titleText)
 
             -- Dropdown
             function Section:CreateDropdown(text, options, callback)
-                local DropBtn = Instance.new("TextButton")
-                DropBtn.Size = UDim2.new(1,0,0,30)
-                DropBtn.BackgroundColor3 = Color3.fromRGB(80,80,120)
-                DropBtn.Text = text.." ▼"
-                DropBtn.TextColor3 = Color3.fromRGB(255,255,255)
-                DropBtn.Font = Enum.Font.SourceSans
-                DropBtn.TextSize = 16
-                DropBtn.Parent = SecFrame
+    local DropBtn = Instance.new("TextButton")
+    DropBtn.Size = UDim2.new(1,0,0,30)
+    DropBtn.BackgroundColor3 = Color3.fromRGB(80,80,120)
+    DropBtn.Text = text.." ▼"
+    DropBtn.TextColor3 = Color3.fromRGB(255,255,255)
+    DropBtn.Font = Enum.Font.SourceSans
+    DropBtn.TextSize = 16
+    DropBtn.Parent = SecFrame
 
-                local DropFrame = Instance.new("Frame")
-                DropFrame.Size = UDim2.new(1,0,0,#options*25)
-                DropFrame.BackgroundColor3 = Color3.fromRGB(60,60,80)
-                DropFrame.Visible = false
-                DropFrame.ClipsDescendants = false
-                DropFrame.ZIndex = 10
-                DropFrame.Parent = SecFrame
+    local DropFrame = Instance.new("Frame")
+    DropFrame.Size = UDim2.new(1,0,0,#options*25)
+    DropFrame.BackgroundColor3 = Color3.fromRGB(60,60,80)
+    DropFrame.Visible = false
+    DropFrame.ZIndex = 10
+    DropFrame.Parent = SecFrame
 
-                local UIList = Instance.new("UIListLayout")
-                UIList.Parent = DropFrame
-                UIList.SortOrder = Enum.SortOrder.LayoutOrder
-                UIList.Padding = UDim.new(0,2)
+    local UIList = Instance.new("UIListLayout")
+    UIList.Parent = DropFrame
+    UIList.SortOrder = Enum.SortOrder.LayoutOrder
+    UIList.Padding = UDim.new(0,2)
 
-                for _, opt in ipairs(options) do
-                    local OptBtn = Instance.new("TextButton")
-                    OptBtn.Size = UDim2.new(1,0,0,25)
-                    OptBtn.BackgroundColor3 = Color3.fromRGB(90,90,130)
-                    OptBtn.Text = opt
-                    OptBtn.TextColor3 = Color3.fromRGB(255,255,255)
-                    OptBtn.Font = Enum.Font.SourceSans
-                    OptBtn.TextSize = 14
-                    OptBtn.ZIndex = 11
-                    OptBtn.Parent = DropFrame
+    -- table to store current option buttons
+    local dropdown = {
+        Frame = DropFrame,
+        Button = DropBtn,
+        ListItems = {},
+        Callback = callback,
+        Label = text
+    }
+                
+    function dropdown:Refresh(newOptions)
+        for _, item in pairs(self.ListItems) do
+            item:Destroy()
+        end
+        self.ListItems = {}
 
-                    OptBtn.MouseButton1Click:Connect(function()
-                        DropBtn.Text = text..": "..opt
-                        DropFrame.Visible = false
-                        if callback then callback(opt) end
-                    end)
-                end
+        for _, opt in ipairs(newOptions) do
+            local OptBtn = Instance.new("TextButton")
+            OptBtn.Size = UDim2.new(1,0,0,25)
+            OptBtn.BackgroundColor3 = Color3.fromRGB(90,90,130)
+            OptBtn.Text = opt
+            OptBtn.TextColor3 = Color3.fromRGB(255,255,255)
+            OptBtn.Font = Enum.Font.SourceSans
+            OptBtn.TextSize = 14
+            OptBtn.ZIndex = 11
+            OptBtn.Parent = self.Frame
+
+            table.insert(self.ListItems, OptBtn)
+
+            OptBtn.MouseButton1Click:Connect(function()
+                self.Button.Text = self.Label..": "..opt
+                self.Frame.Visible = false
+                if self.Callback then self.Callback(opt) end
+            end)
+        end
+
+        self.Frame.Size = UDim2.new(1,0,0,#newOptions*25)
+    end
+
+    dropdown:Refresh(options)
+
+    DropBtn.MouseButton1Click:Connect(function()
+        DropFrame.Visible = not DropFrame.Visible
+    end)
+
+    return dropdown
+            end
 
                 DropBtn.MouseButton1Click:Connect(function()
                     DropFrame.Visible = not DropFrame.Visible
