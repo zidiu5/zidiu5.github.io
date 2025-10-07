@@ -244,7 +244,6 @@ function WhiteLib:CreateWindow(titleText)
                 UIList.SortOrder = Enum.SortOrder.LayoutOrder
                 UIList.Padding = UDim.new(0,2)
             
-                -- table to store current option buttons
                 local dropdown = {
                     Frame = DropFrame,
                     Button = DropBtn,
@@ -252,11 +251,13 @@ function WhiteLib:CreateWindow(titleText)
                     Callback = callback,
                     Label = text
                 }
-                
+                            
                 function dropdown:Refresh(newOptions)
-                    for _, item in pairs(self.ListItems) do item:Destroy() end
+                    for _, item in pairs(self.ListItems) do
+                        item:Destroy()
+                    end
                     self.ListItems = {}
-                    
+
                     for _, opt in ipairs(newOptions) do
                         local OptBtn = Instance.new("TextButton")
                         OptBtn.Size = UDim2.new(1,0,0,25)
@@ -267,19 +268,20 @@ function WhiteLib:CreateWindow(titleText)
                         OptBtn.TextSize = 14
                         OptBtn.ZIndex = 11
                         OptBtn.Parent = self.Frame
-                
+            
                         table.insert(self.ListItems, OptBtn)
-                
+            
                         OptBtn.MouseButton1Click:Connect(function()
                             self.Button.Text = self.Label..": "..opt
                             self.Frame.Visible = false
-                            if self.Callback then self.Callback(opt) end
+                            if self.Callback then
+                                self.Callback(opt)
+                            end
                         end)
                     end
-                
+            
                     self.Frame.Size = UDim2.new(1,0,0,#newOptions*25)
                 end
-
             
                 dropdown:Refresh(options)
             
@@ -288,13 +290,9 @@ function WhiteLib:CreateWindow(titleText)
                 end)
             
                 return dropdown
-                        end
-            
-                            DropBtn.MouseButton1Click:Connect(function()
-                                DropFrame.Visible = not DropFrame.Visible
-                            end)
-                        end
+            end
 
+            
             -- Keybind
             function Section:CreateKeybind(text, defaultKey, callback)
                 local KeyBtn = Instance.new("TextButton")
