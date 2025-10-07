@@ -5,6 +5,7 @@ local LocalPlayer = Players.LocalPlayer
 local WhiteLib = {}
 
 function WhiteLib:CreateWindow(titleText)
+    
     -- Toggle GUI Button
     local WhiteToggleGui = Instance.new("ScreenGui")
     WhiteToggleGui.Name = "WhiteToggle"
@@ -196,7 +197,7 @@ function WhiteLib:CreateWindow(titleText)
                 lbl.TextXAlignment = Enum.TextXAlignment.Left
                 lbl.BackgroundTransparency = 1
                 lbl.Parent = SecFrame
-
+            
                 local box = Instance.new("TextBox")
                 box.Size = UDim2.new(1,0,0,30)
                 box.BackgroundColor3 = Color3.fromRGB(80,80,80)
@@ -206,11 +207,19 @@ function WhiteLib:CreateWindow(titleText)
                 box.TextSize = 16
                 box.ClearTextOnFocus = false
                 box.Parent = SecFrame
-
+            
                 box.FocusLost:Connect(function(enter)
                     if enter and callback then callback(box.Text) end
                 end)
+            
+                -- Live Callback
+                box:GetPropertyChangedSignal("Text"):Connect(function()
+                    if callback then
+                        callback(box.Text)
+                    end
+                end)
             end
+
 
             -- Dropdown
             function Section:CreateDropdown(text, options, callback)
@@ -243,13 +252,11 @@ function WhiteLib:CreateWindow(titleText)
                     Callback = callback,
                     Label = text
                 }
-                            
+                
                 function dropdown:Refresh(newOptions)
-                    for _, item in pairs(self.ListItems) do
-                        item:Destroy()
-                    end
+                    for _, item in pairs(self.ListItems) do item:Destroy() end
                     self.ListItems = {}
-            
+                    
                     for _, opt in ipairs(newOptions) do
                         local OptBtn = Instance.new("TextButton")
                         OptBtn.Size = UDim2.new(1,0,0,25)
@@ -260,18 +267,19 @@ function WhiteLib:CreateWindow(titleText)
                         OptBtn.TextSize = 14
                         OptBtn.ZIndex = 11
                         OptBtn.Parent = self.Frame
-            
+                
                         table.insert(self.ListItems, OptBtn)
-            
+                
                         OptBtn.MouseButton1Click:Connect(function()
                             self.Button.Text = self.Label..": "..opt
                             self.Frame.Visible = false
                             if self.Callback then self.Callback(opt) end
                         end)
                     end
-            
+                
                     self.Frame.Size = UDim2.new(1,0,0,#newOptions*25)
                 end
+
             
                 dropdown:Refresh(options)
             
